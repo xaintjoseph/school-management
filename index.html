@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mainland Heritage College · School Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<style>
+:root{--bg:#f3f0e6;--card:#fffdf6;--ink:#17261f;--mute:#667068;--line:#ddd7c4;--brand:#12382c;--gold:#e2a928;--bad:#b33a2e;--ok:#2e7d4f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1612;--card:#16221c;--ink:#e9e6d8;--mute:#98a39b;--line:#2a3a31;--brand:#0a241b;--bad:#e5695c;--ok:#5cc184}}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--ink);font-family:Figtree,system-ui,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--brand);z-index:60}
+.font-display{font-family:'Bricolage Grotesque',Figtree,sans-serif}
+</style>
+<style type="text/tailwindcss">
+.inp{@apply w-full mt-1 px-3 py-2 rounded-md border border-line bg-bg text-ink text-sm focus:outline-none focus:ring-2 focus:ring-gold}
+.btn{@apply px-4 py-2 rounded-md bg-brand text-white text-sm font-semibold hover:opacity-90 focus-visible:ring-2 focus-visible:ring-gold}
+.btn2{@apply px-4 py-2 rounded-md border border-line text-sm font-medium hover:bg-line/40}
+.card{@apply bg-card border border-line rounded-lg}
+.th{@apply text-left text-xs font-semibold text-mute px-3 py-2 border-b border-line}
+.td{@apply px-3 py-2 border-b border-line/60 text-sm}
+</style>
+<script>tailwind.config={theme:{extend:{colors:{bg:'var(--bg)',card:'var(--card)',ink:'var(--ink)',mute:'var(--mute)',line:'var(--line)',brand:'var(--brand)',gold:'var(--gold)',bad:'var(--bad)',ok:'var(--ok)'}}}}</script>
+</head>
+<body class="min-h-screen md:flex">
+<nav class="md:w-60 md:h-screen md:sticky md:top-0 sticky top-0 z-50 bg-brand text-white flex md:flex-col shrink-0 overflow-x-auto" style="top:env(safe-area-inset-top,0px)">
+  <div class="hidden md:block p-5 border-b border-white/10">
+    <div class="font-display text-xl leading-tight">Mainland Heritage College</div>
+    <div class="text-xs text-white/60 mt-1">Term 1 · 2026/2027 session</div>
+  </div>
+  <div id="tabs" class="flex md:flex-col md:p-3 gap-1 p-2"></div>
+  <div class="hidden md:block mt-auto p-5 text-xs text-white/50">Data stays in this browser.<button onclick="resetAll()" class="block mt-2 underline">Reset sample data</button></div>
+</nav>
+<main class="flex-1 p-4 md:p-8 max-w-6xl w-full"><div id="app"></div></main>
+<div id="m" class="hidden fixed inset-0 z-[70] bg-black/50 items-start justify-center p-4 overflow-y-auto" onclick="if(event.target===this)closeM()"><div id="mc" class="card w-full max-w-lg p-6 mt-8"></div></div>
+
+<script>
+const CL=['JSS 1','JSS 2','JSS 3','SS 1','SS 2','SS 3'],SB=['English','Mathematics','Basic Science','Civic Education','Business Studies','Computer Studies'];
+const $=s=>document.querySelector(s),N=n=>'₦'+Math.round(n).toLocaleString(),today=()=>new Date().toISOString().slice(0,10),fee=c=>c[0]=='J'?85000:110000;
+const grade=t=>t>=75?['A1','Excellent']:t>=70?['B2','Very good']:t>=65?['B3','Good']:t>=55?['C','Credit']:t>=50?['C6','Credit']:t>=40?['P','Pass']:['F9','Fail'];
+const KEY='mhc-sms-v1';
+function seed(){let s=7;const r=(a,b)=>{s=(s*9301+49297)%233280;return a+Math.floor(s/233280*(b-a+1))};
+ const F=['Chinedu','Ifeoma','Tamuno','Emeka','Blessing','Ibrahim','Amina','Ebiere','Oluwaseun','Ngozi','Kelechi','Farida','Tonye','Chiamaka','Sunday'],L=['Okafor','Briggs','Adeyemi','Nwosu','Ibe','Abubakar','Eze','Wokoma','Bello','Amadi','Harry','Opara'];
+ const students=[],scores={},att={};
+ CL.forEach((c,ci)=>{for(let i=0;i<5;i++){const id=students.length+1;students.push({id,name:F[(id*7+ci)%15]+' '+L[(id*5+ci)%12],cls:c,g:id%2?'M':'F',paid:fee(c)*[1,.5,.75,1,.25][r(0,4)]})}
+  SB.forEach(b=>{scores[c+'|'+b]={};students.filter(x=>x.cls==c).forEach(x=>scores[c+'|'+b][x.id]=[r(18,38),r(25,58)])});
+  att[today()+'|'+c]={};students.filter(x=>x.cls==c).forEach(x=>att[today()+'|'+c][x.id]=r(0,9)==0?'A':r(0,12)==0?'L':'P')});
+ const teachers=[['Mrs. Grace Ogbonda','English','JSS 1'],['Mr. Daniel Pepple','Mathematics','JSS 3'],['Mrs. Nneka Ugo','Basic Science','JSS 2'],['Mr. Tari Dagogo','Civic Education','SS 1'],['Miss Halima Sani','Business Studies','SS 2'],['Mr. Peter Ikoli','Computer Studies','SS 3']].map((t,i)=>({id:i+1,name:t[0],subj:t[1],cls:t[2]}));
+ return{students,teachers,scores,att}}
+let db;try{db=JSON.parse(localStorage.getItem(KEY))}catch(e){}db=db||seed();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}};
+function resetAll(){if(confirm('Replace all records with the sample data?')){db=seed();save();render()}}
+
+let tab='Dashboard',S={sc:'JSS 1',sq:'',ac:'JSS 1',ad:today(),gc:'JSS 1',gs:SB[0],fq:''};
+const TABS=['Dashboard','Students','Attendance','Grades','Fees','Teachers'];
+const opts=(a,v)=>a.map(x=>`<option ${x==v?'selected':''}>${x}</option>`).join('');
+const inCls=c=>db.students.filter(s=>s.cls==c);
+const total=(c,b,id)=>{const v=(db.scores[c+'|'+b]||{})[id]||[0,0];return v[0]+v[1]};
+const avg=s=>SB.reduce((a,b)=>a+total(s.cls,b,s.id),0)/SB.length;
+const ranked=c=>inCls(c).map(s=>({...s,avg:avg(s)})).sort((a,b)=>b.avg-a.avg);
+const th=h=>`<th class="th">${h}</th>`;
+const table=(h,rows)=>`<div class="card overflow-x-auto"><table class="w-full min-w-[520px]"><thead><tr>${h.map(th).join('')}</tr></thead><tbody>${rows||`<tr><td class="td text-mute" colspan="${h.length}">Nothing here yet. Use the button above to add a record.</td></tr>`}</tbody></table></div>`;
+const head=(t,sub,btn='')=>`<div class="flex flex-wrap items-end justify-between gap-3 mb-6"><div><h1 class="font-display text-3xl font-bold">${t}</h1><p class="text-sm text-mute mt-1">${sub}</p></div>${btn}</div>`;
+const sel=(id,arr,v,fn)=>`<select class="inp !w-auto !mt-0" onchange="${fn}(this.value)" aria-label="${id}">${opts(arr,v)}</select>`;
+
+const V={
+Dashboard(){
+ const st=db.students,exp=st.reduce((a,s)=>a+fee(s.cls),0),got=st.reduce((a,s)=>a+s.paid,0);
+ let p=0,t=0;CL.forEach(c=>{const a=db.att[today()+'|'+c]||{};Object.values(a).forEach(v=>{t++;if(v!='A')p++})});
+ const top=st.map(s=>({...s,avg:avg(s)})).sort((a,b)=>b.avg-a.avg).slice(0,5);
+ return head('Good day, Principal',new Date().toLocaleDateString('en-NG',{weekday:'long',day:'numeric',month:'long',year:'numeric'}))+`
+ <div class="grid grid-cols-2 lg:grid-cols-4 gap-px bg-line border border-line rounded-lg overflow-hidden mb-6">
+ ${[['Students',st.length,'on roll'],['Teachers',db.teachers.length,'on staff'],['Present today',t?Math.round(p/t*100)+'%':'–',`${p} of ${t} marked`],['Fees collected',Math.round(got/exp*100)+'%',N(got)+' of '+N(exp)]].map(x=>`<div class="bg-card p-5"><div class="text-sm text-mute">${x[0]}</div><div class="font-display text-4xl font-bold mt-1">${x[1]}</div><div class="text-xs text-mute mt-1">${x[2]}</div></div>`).join('')}</div>
+ <div class="grid lg:grid-cols-2 gap-6">
+ <section class="card p-5"><h2 class="font-display text-lg font-bold mb-4">Fees paid by class</h2>${CL.map(c=>{const l=inCls(c),e=l.length*fee(c),g=l.reduce((a,s)=>a+s.paid,0),pc=e?Math.round(g/e*100):0;return`<div class="mb-3"><div class="flex justify-between text-sm"><span>${c}</span><span class="text-mute">${pc}%</span></div><div class="h-2 rounded bg-line mt-1"><div class="h-2 rounded bg-gold" style="width:${pc}%"></div></div></div>`}).join('')}</section>
+ <section class="card p-5"><h2 class="font-display text-lg font-bold mb-4">Top five this term</h2>${top.map((s,i)=>`<div class="flex items-center gap-3 py-2 border-b border-line/60 last:border-0"><span class="font-display text-2xl w-6 text-gold">${i+1}</span><div class="flex-1"><div class="text-sm font-semibold">${s.name}</div><div class="text-xs text-mute">${s.cls}</div></div><div class="font-semibold">${s.avg.toFixed(1)}%</div></div>`).join('')}</section></div>`},
+
+Students(){
+ const q=S.sq.toLowerCase(),l=db.students.filter(s=>(S.sc=='All'||s.cls==S.sc)&&s.name.toLowerCase().includes(q));
+ return head('Students',`${l.length} shown`,`<button class="btn" onclick="addStudent()">Add student</button>`)+
+ `<div class="flex flex-wrap gap-2 mb-4">${sel('Class',['All',...CL],S.sc,'setSc')}<input class="inp !w-56 !mt-0" placeholder="Search by name" value="${S.sq}" oninput="S.sq=this.value;render(true)"></div>`+
+ table(['Name','Class','Sex','Fee balance',''],l.map(s=>`<tr><td class="td font-medium">${s.name}</td><td class="td">${s.cls}</td><td class="td">${s.g}</td><td class="td ${fee(s.cls)-s.paid>0?'text-bad':'text-ok'}">${fee(s.cls)-s.paid>0?N(fee(s.cls)-s.paid):'Cleared'}</td><td class="td text-right"><button class="text-xs underline mr-3" onclick="card(${s.id})">Report card</button><button class="text-xs text-bad underline" onclick="delStudent(${s.id})">Remove</button></td></tr>`).join(''))},
+
+Attendance(){
+ const k=S.ad+'|'+S.ac,a=db.att[k]||{},l=inCls(S.ac),c={P:0,L:0,A:0};l.forEach(s=>a[s.id]&&c[a[s.id]]++);
+ const b=(s,m,cl)=>`<button onclick="mark(${s.id},'${m}')" class="w-11 h-11 rounded-md border text-sm font-bold ${a[s.id]==m?cl+' text-white border-transparent':'border-line text-mute'}">${m}</button>`;
+ return head('Attendance register','Tap P for present, L for late, A for absent')+
+ `<div class="flex flex-wrap gap-2 mb-4">${sel('Class',CL,S.ac,'setAc')}<input type="date" class="inp !w-auto !mt-0" value="${S.ad}" onchange="S.ad=this.value;render()"></div>
+ <div class="card">${l.map(s=>`<div class="flex items-center justify-between px-4 py-2 border-b border-line/60 last:border-0"><span class="text-sm font-medium">${s.name}</span><span class="flex gap-1">${b(s,'P','bg-ok')}${b(s,'L','bg-gold')}${b(s,'A','bg-bad')}</span></div>`).join('')}</div>
+ <p class="text-sm text-mute mt-3">Present ${c.P} · Late ${c.L} · Absent ${c.A} · Unmarked ${l.length-c.P-c.L-c.A}</p>`},
+
+Grades(){
+ const k=S.gc+'|'+S.gs,sc=db.scores[k]||{},l=inCls(S.gc),rk=ranked(S.gc);
+ return head('Grades','Continuous assessment out of 40, exam out of 60')+
+ `<div class="flex flex-wrap gap-2 mb-4">${sel('Class',CL,S.gc,'setGc')}${sel('Subject',SB,S.gs,'setGs')}</div>`+
+ table(['Student','CA /40','Exam /60','Total','Grade','Remark'],l.map(s=>{const v=sc[s.id]||[0,0],t=v[0]+v[1],g=grade(t);return`<tr><td class="td font-medium">${s.name}</td><td class="td"><input type="number" min="0" max="40" value="${v[0]}" class="inp !w-20 !mt-0" onchange="setSc2(${s.id},0,this.value,40)"></td><td class="td"><input type="number" min="0" max="60" value="${v[1]}" class="inp !w-20 !mt-0" onchange="setSc2(${s.id},1,this.value,60)"></td><td class="td font-semibold">${t}</td><td class="td font-bold ${t<40?'text-bad':''}">${g[0]}</td><td class="td text-mute">${g[1]}</td></tr>`}).join(''))+
+ `<h2 class="font-display text-lg font-bold mt-8 mb-3">Class position, ${S.gc}</h2><div class="flex flex-wrap gap-2">${rk.map((s,i)=>`<button onclick="card(${s.id})" class="card px-3 py-2 text-left hover:border-gold"><div class="text-xs text-mute">${i+1}${['st','nd','rd'][i]||'th'}</div><div class="text-sm font-semibold">${s.name}</div><div class="text-xs">${s.avg.toFixed(1)}%</div></button>`).join('')}</div>`},
+
+Fees(){
+ const l=db.students.filter(s=>S.fq=='All'||!S.fq||s.cls==S.fq);
+ return head('School fees','Per-term fee: '+N(85000)+' (JSS) · '+N(110000)+' (SS)')+
+ `<div class="mb-4">${sel('Class',['All',...CL],S.fq||'All','setFq')}</div>`+
+ table(['Student','Class','Paid','Balance','Progress',''],l.map(s=>{const f=fee(s.cls),o=f-s.paid,pc=Math.round(s.paid/f*100);return`<tr><td class="td font-medium">${s.name}</td><td class="td">${s.cls}</td><td class="td">${N(s.paid)}</td><td class="td ${o>0?'text-bad':'text-ok'}">${o>0?N(o):'Cleared'}</td><td class="td w-32"><div class="h-2 rounded bg-line"><div class="h-2 rounded bg-gold" style="width:${pc}%"></div></div></td><td class="td text-right">${o>0?`<button class="text-xs underline" onclick="pay(${s.id})">Record payment</button>`:''}</td></tr>`}).join(''))},
+
+Teachers(){
+ return head('Teachers',`${db.teachers.length} on staff`,`<button class="btn" onclick="addTeacher()">Add teacher</button>`)+
+ `<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">${db.teachers.map(t=>`<div class="card p-5"><div class="font-display text-lg font-bold">${t.name}</div><div class="text-sm mt-1">${t.subj}</div><div class="text-xs text-mute">Form teacher, ${t.cls}</div><button class="text-xs text-bad underline mt-3" onclick="delTeacher(${t.id})">Remove</button></div>`).join('')}</div>`}
+};
+
+function render(keep){
+ $('#tabs').innerHTML=TABS.map(t=>`<button onclick="tab='${t}';render()" class="whitespace-nowrap text-left px-3 py-2 rounded-md text-sm ${t==tab?'bg-gold text-brand font-semibold':'text-white/80 hover:bg-white/10'}">${t}</button>`).join('');
+ const f=document.activeElement,id=f&&f.placeholder;
+ $('#app').innerHTML=V[tab]();
+ if(keep&&id){const n=$('#app input[placeholder]');if(n){n.focus();n.setSelectionRange(99,99)}}
+}
+const setSc=v=>{S.sc=v;render()},setAc=v=>{S.ac=v;render()},setGc=v=>{S.gc=v;render()},setGs=v=>{S.gs=v;render()},setFq=v=>{S.fq=v;render()};
+function mark(id,m){const k=S.ad+'|'+S.ac;(db.att[k]=db.att[k]||{})[id]=m;save();render()}
+function setSc2(id,i,v,max){const k=S.gc+'|'+S.gs;(db.scores[k]=db.scores[k]||{});const a=db.scores[k][id]||[0,0];a[i]=Math.max(0,Math.min(max,+v||0));db.scores[k][id]=a;save();render()}
+function modal(h){$('#mc').innerHTML=h;$('#m').classList.remove('hidden');$('#m').classList.add('flex')}
+function closeM(){$('#m').classList.add('hidden');$('#m').classList.remove('flex')}
+function form(title,fs,cb){modal(`<h3 class="font-display text-xl font-bold mb-4">${title}</h3><form id="f" class="space-y-3">${fs.map(f=>`<label class="block text-sm">${f.l}${f.o?`<select name="${f.k}" class="inp">${opts(f.o)}</select>`:`<input name="${f.k}" type="${f.t||'text'}" ${f.x||''} required class="inp">`}</label>`).join('')}<div class="flex gap-2 justify-end pt-2"><button type="button" onclick="closeM()" class="btn2">Cancel</button><button class="btn">Save</button></div></form>`);
+ $('#f').onsubmit=e=>{e.preventDefault();cb(Object.fromEntries(new FormData(e.target)));closeM();save();render()}}
+const nid=a=>a.reduce((m,x)=>Math.max(m,x.id),0)+1;
+function addStudent(){form('Add student',[{k:'name',l:'Full name'},{k:'cls',l:'Class',o:CL},{k:'g',l:'Sex',o:['M','F']}],d=>{const id=nid(db.students);db.students.push({id,name:d.name,cls:d.cls,g:d.g,paid:0})})}
+function delStudent(id){if(confirm('Remove this student and their records?')){db.students=db.students.filter(s=>s.id!=id);save();render()}}
+function addTeacher(){form('Add teacher',[{k:'name',l:'Full name'},{k:'subj',l:'Subject',o:SB},{k:'cls',l:'Form class',o:CL}],d=>db.teachers.push({id:nid(db.teachers),...d}))}
+function delTeacher(id){db.teachers=db.teachers.filter(t=>t.id!=id);save();render()}
+function pay(id){const s=db.students.find(x=>x.id==id),o=fee(s.cls)-s.paid;form('Record payment: '+s.name,[{k:'amt',l:`Amount received (balance ${N(o)})`,t:'number',x:`min="1" max="${o}"`}],d=>{s.paid=Math.min(fee(s.cls),s.paid+ +d.amt)})}
+function card(id){const s=db.students.find(x=>x.id==id),pos=ranked(s.cls).findIndex(x=>x.id==id)+1,a=avg(s);
+ modal(`<div class="flex justify-between items-start"><div><div class="text-xs text-mute">Report card · Term 1, 2026/2027</div><h3 class="font-display text-2xl font-bold">${s.name}</h3><div class="text-sm text-mute">${s.cls} · Position ${pos} of ${inCls(s.cls).length} · Average ${a.toFixed(1)}%</div></div></div>
+ <table class="w-full mt-4 text-sm"><tr><th class="th">Subject</th><th class="th">Total</th><th class="th">Grade</th></tr>${SB.map(b=>{const t=total(s.cls,b,id),g=grade(t);return`<tr><td class="td">${b}</td><td class="td">${t}</td><td class="td font-bold ${t<40?'text-bad':''}">${g[0]} <span class="font-normal text-mute">${g[1]}</span></td></tr>`}).join('')}</table>
+ <p class="text-sm mt-4 italic text-mute">${a>=70?'An outstanding term. Keep it up.':a>=50?'A steady term with room to grow.':'Needs extra support. Please meet the form teacher.'}</p>
+ <div class="flex gap-2 justify-end mt-4"><button class="btn2" onclick="closeM()">Close</button></div>`)}
+render();
+</script>
+</body>
+</html>
